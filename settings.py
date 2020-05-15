@@ -1,0 +1,3 @@
+# SQLALCHEMY_DATABASE_URI = 'mssql+pyodbc://LAPTOP-JM1M6JLK\lenovo/Analysis?driver=SQL+Server+Native+Client+11.0'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+BUNDLE_ERRORS = True
