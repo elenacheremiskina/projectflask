@@ -1,5 +1,5 @@
-from flask_restful import Resource, reqparse, request
-from flask_restful import fields, marshal_with, marshal
+from flask_restful import Resource, reqparse, request, fields, marshal_with, marshal
+from flask import Flask, abort, request, jsonify, g, url_for
 from .model import User
 from app import db
 
@@ -9,7 +9,8 @@ user_fields = {
     'surname': fields.String,
     'name': fields.String,
     'patronymic': fields.String,
-    'position':fields.String
+    'position': fields.String,
+    'password_hash': fields.String
 }
 
 user_list_fields = {
@@ -28,7 +29,8 @@ user_post_parser.add_argument('patronymic', type=str, required=True, location=['
                               help='patronymic parameter is required')
 user_post_parser.add_argument('position', type=str, required=True, location=['json'],
                               help='position parameter is required')
-
+user_post_parser.add_argument('password_hash', type=str, required=True, location=['json'],
+                              help='password_hash parameter is required')
 
 class UsersResource(Resource):
     def get(self, id_user=None):
@@ -59,16 +61,13 @@ class UsersResource(Resource):
 
     @marshal_with(user_fields)
     def post(self):
+        email = request.json.get('email')
+        password_hash = request.json.get('password_hash')
         args = user_post_parser.parse_args()
 
         user = User(**args)
+        user.hash_password(password_hash)
         db.session.add(user)
         db.session.commit()
 
         return user
-
-    def put(self, id_user=None):
-        return 'method: put, text: users' 
-
-    def delete(self, id_user=None):
-        return 'method: delete, text: users' 
