@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from flask_restful import fields, marshal_with, marshal
 from .model import Syntax
-from app import db
+from app import db, auth
 
 syntax_fields = {
     'id_result': fields.Integer,
@@ -25,6 +25,7 @@ syntax_post_parser.add_argument('id_text', type=int, required=True, location=['j
 
 
 class SyntaxResource(Resource):
+    @auth.login_required
     def get(self, id_result=None):
         if id_result:
             syntax = Syntax.query.filter_by(id_result=id_result).first()
@@ -52,6 +53,7 @@ class SyntaxResource(Resource):
             }, syntax_list_fields)
         return 'method: get, text: syntax' 
 
+    @auth.login_required
     @marshal_with(syntax_fields)
     def post(self):
         args = syntax_post_parser.parse_args()
@@ -63,8 +65,10 @@ class SyntaxResource(Resource):
         return syntax
         return 'method: post, text: syntax' 
 
+    @auth.login_required
     def put(self, id_result=None):
         return 'method: put, text: syntax' 
 
+    @auth.login_required
     def delete(self, id_result=None):
         return 'method: delete, text: syntax' 
