@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from flask_restful import fields, marshal_with, marshal
 from .model import Semantic
-from app import db
+from app import db, auth
 
 semantic_fields = {
     'id_result': fields.Integer,
@@ -25,6 +25,7 @@ semantic_post_parser.add_argument('id_text', type=int, required=True, location=[
 
 
 class SemanticResource(Resource):
+    @auth.login_required
     def get(self, id_result=None):
         if id_result:
             semantic = Semantic.query.filter_by(id_result=id_result).first()
@@ -51,6 +52,7 @@ class SemanticResource(Resource):
                 'semantics': [marshal(t, semantic_fields) for t in semantic]
             }, semantic_list_fields)
 
+    @auth.login_required
     @marshal_with(semantic_fields)
     def post(self):
         args = semantic_post_parser.parse_args()
@@ -61,8 +63,10 @@ class SemanticResource(Resource):
 
         return semantic
 
+    @auth.login_required
     def put(self, semantic_id=None):
         return 'method: put, text: semantic' 
 
+    @auth.login_required
     def delete(self, semantic_id=None):
         return 'method: delete, text: semantic' 
