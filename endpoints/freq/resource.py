@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from flask_restful import fields, marshal_with, marshal
 from .model import Freq
-from app import db
+from app import db, auth
 
 freq_fields = {
     'id_result': fields.Integer,
@@ -31,6 +31,7 @@ freq_post_parser.add_argument('id_text', type=int, required=True, location=['jso
 
 
 class FreqResource(Resource):
+    @auth.login_required
     def get(self, id_result=None):
         if id_result:
             freq = Freq.query.filter_by(id_result=id_result).first()
@@ -56,6 +57,7 @@ class FreqResource(Resource):
                 'freqs': [marshal(t, freq_fields) for t in freq]
             }, freq_list_fields)
 
+    @auth.login_required
     @marshal_with(freq_fields)
     def post(self):
         args = freq_post_parser.parse_args()
@@ -65,8 +67,10 @@ class FreqResource(Resource):
         db.session.commit()
         return freq
 
+    @auth.login_required
     def put(self, id_result=None):
         return 'method: put, text: frequency'
 
+    @auth.login_required
     def delete(self, id_result=None):
         return 'method: delete, text: frequency'
