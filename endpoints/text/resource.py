@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, request
 from flask_restful import fields, marshal_with, marshal
 from .model import Text
-from app import db
+from app import db, auth
 
 text_fields = {
     'id_text': fields.Integer,
@@ -25,6 +25,7 @@ text_post_parser.add_argument('file', type=str, required=True, location=['json']
 
 
 class TextResource(Resource):
+    @auth.login_required
     def get(self, id_text=None):
         if id_text:
             text = Text.query.filter_by(id_text=id_text).first()
@@ -51,6 +52,7 @@ class TextResource(Resource):
                 'texts': [marshal(t, text_fields) for t in text]
             }, text_list_fields)
 
+    @auth.login_required
     @marshal_with(text_fields)
     def post(self):
         args = text_post_parser.parse_args()
@@ -61,8 +63,10 @@ class TextResource(Resource):
 
         return text
 
+    @auth.login_required
     def put(self, id_text=None):
         return 'method: put, text: text' 
         
+    @auth.login_required
     def delete(self, id_text=None):
         return 'method: delete, text: text' 

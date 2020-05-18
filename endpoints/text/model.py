@@ -5,7 +5,7 @@ class Text(db.Model):
     __tablename__ = 'text'
 
     id_text = db.Column(db.Integer, primary_key=True, nullable=False)
-    text = db.Column(db.String(10000), nullable=False)
+    text = db.Column(db.String(8000), nullable=False)
     type = db.Column(db.String(1000), nullable=False)
 
     file = db.Column(db.String(1000), nullable=False)
