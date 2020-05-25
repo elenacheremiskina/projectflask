@@ -1,0 +1,67 @@
+.layout-topbar {
+  position: fixed;
+  height: 50px;
+  padding: 0.7em 1.5em 0em 1.5em;
+  color: #ffffff;
+  z-index: 999;
+  right: 0;
+  @include clearfix();
+  @include linear-gradient-left($topbarLeftBgColor, $topbarRightBgColor);
+  @include transition(left $transitionDuration);
+
+  .layout-topbar-icons {
+    float: right;
+    display: block;
+    -moz-animation-duration: 0.5s;
+    -webkit-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+
+    button {
+      position: relative;
+      color: $topbarItemColor;
+      margin-left: 20px;
+      display: inline-block;
+      text-decoration: none;
+      @include transition(color $transitionDuration);
+
+      &:hover {
+        color: $topbarItemHoverColor;
+      }
+
+      &:focus {
+        @include focused();
+      }
+
+      span {
+        &.layout-topbar-icon {
+          font-size: 2em;
+        }
+
+        &.layout-topbar-item-text {
+          font-size: 20px;
+          display: none;
+        }
+      }
+    }
+  }
+
+  .layout-menu-button {
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    color: $topbarItemColor;
+    @include transition(color $transitionDuration);
+
+    span {
+      font-size: 2em;
+    }
+
+    &:hover {
+      color: $topbarItemHoverColor;
+    }
+  }
+
+  button {
+    cursor: pointer;
+  }
+}

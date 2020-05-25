@@ -1,0 +1,17 @@
+/* Dashboard */
+.dashboard {
+    
+    .summary {
+        position: relative;
+        
+        .title {
+            font-size: 20px;
+        }
+        
+        .detail {
+            color: $textSecondaryColor;
+            display: block;
+            margin-top: 10px;
+        }
+    }
+}
