@@ -5,10 +5,10 @@ class Text(db.Model):
     __tablename__ = 'text'
 
     id_text = db.Column(db.Integer, primary_key=True, nullable=False)
-    text = db.Column(db.String(8000), nullable=False)
-    type = db.Column(db.String(1000), nullable=False)
+    # text = db.Column(db.String(8000), nullable=False)
+    # type = db.Column(db.String(1000), nullable=False)
 
     file = db.Column(db.String(1000), nullable=False)
 
     def __repr__(self):      
-        return 'Id: {}, text: {}'.format(self.id_text, self.text)
+        return 'Id: {}, text: {}'.format(self.id_text, self.file)

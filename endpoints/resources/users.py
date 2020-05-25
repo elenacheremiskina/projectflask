@@ -7,7 +7,6 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    # jwt_manager,
     jwt_required,
     jwt_refresh_token_required,
     get_jwt_identity,
@@ -37,23 +36,7 @@ user_list_fields = {
     'users': fields.List(fields.Nested(user_fields)),
 }
 
-# user_post_parser = reqparse.RequestParser()
-# user_post_parser.add_argument('email', type=str, required=True, location=['json'],
-#                               help='email parameter is required')
-# user_post_parser.add_argument('surname', type=str, required=True, location=['json'],
-#                               help='surname parameter is required')
-# user_post_parser.add_argument('name', type=str, required=True, location=['json'],
-#                               help='name parameter is required')
-# user_post_parser.add_argument('patronymic', type=str, required=True, location=['json'],
-#                               help='patronymic parameter is required')
-# user_post_parser.add_argument('position', type=str, required=True, location=['json'],
-#                               help='position parameter is required')
-# user_post_parser.add_argument('password_hash', type=str, required=True, location=['json'],
-#                               help='password_hash parameter is required')
-
-
 class UserRegister(Resource):
-    # @marshal_with(user_fields)
     def post(self):
         user_post_parser = reqparse.RequestParser()
         user_post_parser.add_argument('email', type=str, required=True, location=['json'],
@@ -75,9 +58,7 @@ class UserRegister(Resource):
 
         user = User(**args)
         user.hash_pass(password)
-        #
-        # password = User.hash_pass(args["password_hash"])
-        # try:
+
         user.save_to_db()
         access_token = create_access_token(identity=args["email"])
         refresh_token = create_refresh_token(identity=args["email"])
@@ -86,11 +67,7 @@ class UserRegister(Resource):
             "message": "Register success",
             "access_token": access_token,
             "refresh_token": refresh_token,
-            # "pass": user.password_hash,
         }
-        # except Exception as e:
-        #     print(e)
-        #     return error.SERVER_ERROR_500
         
 
 class UserLogin(Resource):

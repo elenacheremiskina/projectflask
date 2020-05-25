@@ -1,7 +1,10 @@
 from flask_restful import Resource, reqparse, request
 from flask_restful import fields, marshal_with, marshal
+from flask import redirect, request, url_for
 from endpoints.models.text import Text
-from app import db
+from app import db, app
+import os
+from werkzeug.utils import secure_filename
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -11,11 +14,13 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_raw_jwt,
 )
+import uuid
+
 
 text_fields = {
     'id_text': fields.Integer,
-    'text': fields.String,
-    'type': fields.String,
+    # 'text': fields.String,
+    # 'type': fields.String,
     'file': fields.String
 }
 
@@ -25,10 +30,10 @@ text_list_fields = {
 }
 
 text_post_parser = reqparse.RequestParser()
-text_post_parser.add_argument('text', type=str, required=True, location=['json'],
-                              help='text parameter is required')
-text_post_parser.add_argument('type', type=str, required=True, location=['json'],
-                              help='type parameter is required')
+# text_post_parser.add_argument('text', type=str, required=True, location=['json'],
+#                               help='text parameter is required')
+# text_post_parser.add_argument('type', type=str, required=True, location=['json'],
+#                               help='type parameter is required')
 text_post_parser.add_argument('file', type=str, required=True, location=['json'],
                               help='file parameter is required')
 
@@ -64,18 +69,22 @@ class TextResource(Resource):
     @jwt_required
     @marshal_with(text_fields)
     def post(self):
-        args = text_post_parser.parse_args()
-
-        text = Text(**args)
-        db.session.add(text)
-        db.session.commit()
-
-        return text
-
-    @jwt_required
-    def put(self, id_text=None):
-        return 'method: put, text: text' 
         
-    @jwt_required
-    def delete(self, id_text=None):
-        return 'method: delete, text: text' 
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+
+        # Gen GUUID File Name
+        fileExt = filename.split('.')[1]
+        autoGenFileName = uuid.uuid4()
+
+        newFileName = str(autoGenFileName) + '.' + fileExt
+
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], newFileName))
+
+        #Save file Info into DB
+        file = Text(file=newFileName)
+
+        db.session.add(file)
+        db.session.commit()
+        return file
+ 

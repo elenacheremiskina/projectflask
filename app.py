@@ -3,8 +3,7 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException, default_exceptions
 import urllib
-# from flask_httpauth import HTTPBasicAuth
-
+import os
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import datetime
@@ -33,6 +32,9 @@ app.config['JWT_SECRET_KEY'] = 'jwt-secret'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ["access", "refresh"]
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=24)
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
@@ -44,10 +46,9 @@ def check_token_revoked(decrypted_token):
 
 api = Api(app)
 api.prefix = '/api'
-# auth = HTTPBasicAuth()
 
 # from endpoints.users.resource import UsersResource
-# from endpoints.text.resource import TextResource
+from endpoints.resources.text import TextResource
 # from endpoints.syntax.resource import SyntaxResource
 # from endpoints.semantic.resource import SemanticResource
 # from endpoints.freq.resource import FreqResource
@@ -56,7 +57,7 @@ from endpoints.resources.users import *
 
 # api.add_resource(UsersResource, '/', '/<int:id_user>')
 
-# api.add_resource(TextResource, '/text', '/text/<int:id_text>')
+api.add_resource(TextResource, '/text', '/text/<int:id_text>')
 # api.add_resource(SyntaxResource, '/syntax', '/syntax/<int:id_result>')
 # api.add_resource(SemanticResource, '/semantic', '/semantic/<int:id_result>')
 # api.add_resource(FreqResource, '/freq', '/freq/<int:id_result>')
