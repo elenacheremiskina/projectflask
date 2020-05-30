@@ -62,6 +62,8 @@ export default {
   methods: {
     handleSubmit: function(e) {
       e.preventDefault();
+      window.localStorage.removeItem('authUser')
+      window.localStorage.removeItem('id_text')
       const authUser = {};
       const url = "http://localhost:5000/api/login";
       if (this.email && this.password_hash) {

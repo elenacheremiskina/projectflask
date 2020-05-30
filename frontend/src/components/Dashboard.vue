@@ -12,13 +12,6 @@
         </b-card>
       </div>
     </div>
-    <!-- <div class="p-col-12">
-      <div>
-        <b-card title="Редактор">
-          <Editor editorStyle="height: 320px"/>
-        </b-card>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -30,7 +23,6 @@ export default {
       file: null,
       text: "",
       type: ""
-      // file: ""
     };
   },
   created() {
@@ -56,7 +48,8 @@ export default {
         }
       })
         .then(response => {
-          console.log(response);
+          console.log(response.data.id_text);
+          window.localStorage.setItem("id_text", response.data.id_text);
           this.$router.push("sample");
         })
         .catch(function(err) {

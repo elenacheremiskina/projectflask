@@ -9,8 +9,8 @@ from flask_cors import CORS
 import datetime
 
 app = Flask(__name__)
+app.debug = True
 CORS(app)
-
 jwt = JWTManager(app)
 
 @app.errorhandler(Exception)
@@ -20,10 +20,12 @@ def handle_error(e):
         code = e.code
     return jsonify(error=str(e)), code
 
+
 for ex in default_exceptions:
     app.register_error_handler(ex, handle_error)
 
-params = urllib.parse.quote_plus('DRIVER={SQL Server};SERVER=LAPTOP-JM1M6JLK\SQLEXPRESS;DATABASE=Analysis;Trusted_Connection=yes;')
+params = urllib.parse.quote_plus(
+    'DRIVER={SQL Server};SERVER=LAPTOP-JM1M6JLK\SQLEXPRESS;DATABASE=Analysis;Trusted_Connection=yes;')
 app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -38,24 +40,23 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
-from endpoints.models.revoke import RevokedTokenModel
+
 @jwt.token_in_blacklist_loader
 def check_token_revoked(decrypted_token):
     jti = decrypted_token['jti']
     return RevokedTokenModel.is_revoked(jti)
 
+
 api = Api(app)
 api.prefix = '/api'
-
-# from endpoints.users.resource import UsersResource
 from endpoints.resources.text import TextResource
+from endpoints.models.revoke import RevokedTokenModel
+from endpoints.resources.users import *
+# from endpoints.users.resource import UsersResource
 # from endpoints.syntax.resource import SyntaxResource
 # from endpoints.semantic.resource import SemanticResource
 # from endpoints.freq.resource import FreqResource
 # from endpoints.register.resource import RegisterResource
-from endpoints.resources.users import *
-
-# api.add_resource(UsersResource, '/', '/<int:id_user>')
 
 api.add_resource(TextResource, '/text', '/text/<int:id_text>')
 # api.add_resource(SyntaxResource, '/syntax', '/syntax/<int:id_result>')

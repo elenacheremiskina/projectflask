@@ -1,19 +1,12 @@
 <template>
   <div class="layout-topbar">
-    <b-button
-      class="p-link layout-menu-button"
-      id="toggler"
-      @click="onMenuToggle"
-    >
+    <b-button class="p-link layout-menu-button" id="toggler" @click="onMenuToggle">
       <span class="fa fa-bars" style="font-size:24px"></span>
     </b-button>
     <div class="layout-topbar-icons">
       <b-button class="p-link" id="switch" @click="logout">
         <span class="layout-topbar-item-text">Logout</span>
-        <span
-          class="layout-topbar-icon fa fa-fw fa-power-off"
-          style="font-size:24px"
-        ></span>
+        <span class="layout-topbar-icon fa fa-fw fa-power-off" style="font-size:24px"></span>
       </b-button>
     </div>
   </div>
@@ -23,7 +16,8 @@
 import Axios from "axios";
 export default {
   data() {
-    return {};
+    return {
+    };
   },
   methods: {
     onMenuToggle(event) {
@@ -38,18 +32,20 @@ export default {
       Axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       Axios.post(url, {
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       })
-        .then((res) => {
-          this.$store.dispatch("clearAuthUser");
-          window.localStorage.removeItem("authUser");
+        .then(res => {
+          console.log(res);
+          this.$store.dispatch('clearAuthUser')
+          window.localStorage.removeItem('authUser')
+          window.localStorage.removeItem('id_text')
           this.$router.push("/");
         })
-        .catch((err) => {
+        .catch(err => {
           console.log("AXIOS ERROR: ", err);
         });
-    },
-  },
+    }
+  }
 };
 </script>

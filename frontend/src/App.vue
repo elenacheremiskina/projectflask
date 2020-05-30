@@ -14,7 +14,7 @@
         <div class="layout-logo">
           <router-link to="/"></router-link>
         </div>
-        <AppMenu :model="menu" @menuitem-click="onMenuItemClick" />
+        <AppMenu :model="menu" @menuitem-click="onMenuItemClick" v-if="userStore.authUser !== null && userStore.authUser.access_token"/>
       </div>
     </transition>
     <div class="layout-main">
